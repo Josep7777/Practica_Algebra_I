@@ -3,7 +3,7 @@
 // NPC's or objects will be GREEN
 // and static
 // PC will be red and moves with mouse
-import java.util.Scanner;
+//import java.util.Scanner;
 // Variables
 // Object's positions
 int[] objects_x_coord;
@@ -12,10 +12,10 @@ int[] objects_y_coord;
 int amount_objects;
 // Radius
 int circles_radius;
-
-
+int N;
+int pc_health = 1000;
 //NPC Speed
-float npc_speed = 1.5;
+float npc_speed = random(1.5,6);
 
 // Functions
 // Initialize
@@ -58,6 +58,7 @@ void draw() {
     vectorX/=magnitude;
     vectorY/=magnitude;
     // 3- Scale the vector
+    
     vectorX*=npc_speed;
     vectorY*=npc_speed;
     // 4- Move the enemy
@@ -105,11 +106,13 @@ void mouseMoved() {
   // We show a message
   fill(255);
   if (collided) {
-    //println("YES");
-    text("YES :)", 20, 380);
+    //println("YES
+    //text("YES :)", 20, 380);
+    pc_health -= 1;
+    text(pc_health, 20, 380);
   } else {
     //println("NO");
-    text("NO :(", 20, 380);
+    text("HAS PERDIDO :(", 20, 380);
   }
 
   // Red for the PC
