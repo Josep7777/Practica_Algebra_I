@@ -8,10 +8,8 @@
 // Object's positions
 int[] objects_x_coord;
 int[] objects_y_coord;
-int[] objects_x_coord2;
-int[] objects_y_coord2;
 // How many objects?
-int amount_objects, escape;
+int amount_objects;
 // Radius
 int circles_radius;
 int N;
@@ -27,21 +25,12 @@ void setup() {
   // No contours for our circles
   noStroke();
   // Arrays
-  amount_objects = 10;
-  escape = 10;
-  // Objects in screen
-  objects_x_coord2 = new int[amount_objects];
-  objects_y_coord2= new int[amount_objects];
-  
-   objects_x_coord = new int[escape];
-  objects_y_coord = new int[escape];
+  amount_objects = 10;  // Objects in screen
+  objects_x_coord = new int[amount_objects];
+  objects_y_coord = new int[amount_objects];
   // Locate the objects (x,y)
   // Random!!!
   for (int counter=0; counter<amount_objects; counter++) {
-    objects_x_coord2[counter] = (int)random(width-1);
-    objects_y_coord2[counter] = (int)random(height-1);
-  }
-  for (int counter=0; counter<escape; counter++) {
     objects_x_coord[counter] = (int)random(width-1);
     objects_y_coord[counter] = (int)random(height-1);
   }
@@ -56,7 +45,7 @@ void draw() {
   // Object's color is green
   fill(0, 255, 0);
   // We loop through the objects
-  for (int counter=0; counter<escape; counter++) {
+  for (int counter=0; counter<amount_objects; counter++) {
     ellipse(objects_x_coord[counter], 
       objects_y_coord[counter], 
       circles_radius, circles_radius);
@@ -73,34 +62,12 @@ void draw() {
     vectorX*=npc_speed;
     vectorY*=npc_speed;
     // 4- Move the enemy
-    objects_x_coord[counter]-=vectorX;
-    objects_y_coord[counter]-=vectorY;
+    objects_x_coord[counter]+=vectorX;
+    objects_y_coord[counter]+=vectorY;
   }
-      
-      noStroke();
-      rect(20, 380, map(health, 0, 500, 0, 500), 19 );
-  for (int counter2=0; counter2<amount_objects; counter2++) {
-    ellipse(objects_x_coord2[counter2], 
-      objects_y_coord2[counter2], 
-      circles_radius, circles_radius);
-     // 1- Evaluate a vector
-    float vectorX, vectorY;
-    vectorX=mouseX-objects_x_coord2[counter2];
-    vectorY=mouseY-objects_y_coord2[counter2];
-    // 2- Normalize the vector
-    float magnitude = sqrt(vectorX*vectorX + vectorY*vectorY);
-    vectorX/=magnitude;
-    vectorY/=magnitude;
-    // 3- Scale the vector
-    
-    vectorX*=npc_speed;
-    vectorY*=npc_speed;
-    // 4- Move the enemy
-   objects_x_coord2[counter2]+=vectorX;
-   objects_y_coord2[counter2]+=vectorY;
-  
-  }
-  
+    fill(244, 3, 3);
+  noStroke();
+  rect(20, 380, map(health, 0, 500, 0, 500), 19 );
 }
 
 // Events (callbacks)
@@ -123,9 +90,9 @@ void mouseMoved() {
   for (int counter=0; counter<amount_objects; counter++) {
     // Vector Coords.
     distance_between_centers[0]=
-      mouseX - objects_x_coord2[counter];
+      mouseX - objects_x_coord[counter];
     distance_between_centers[1]=
-      mouseY - objects_y_coord2[counter];
+      mouseY - objects_y_coord[counter];
     // Vector Magnitude.
     magnitude_of_vector = sqrt(
       distance_between_centers[0]*
@@ -145,7 +112,7 @@ void mouseMoved() {
     //println("YES
     //text("YES :)", 20, 380);
     health -= 1;
-    
+    text(health, 20, 380);
   } else {
     //println("NO");
     //text("HAS PERDIDO :(", 20, 380);
