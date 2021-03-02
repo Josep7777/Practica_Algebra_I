@@ -13,7 +13,7 @@ int amount_objects;
 // Radius
 int circles_radius;
 int N;
-int pc_health = 1000;
+int health = 500;
 //NPC Speed
 float npc_speed = random(1.5,6);
 
@@ -65,6 +65,9 @@ void draw() {
     objects_x_coord[counter]+=vectorX;
     objects_y_coord[counter]+=vectorY;
   }
+    fill(244, 3, 3);
+  noStroke();
+  rect(20, 380, map(health, 0, 500, 0, 500), 19 );
 }
 
 // Events (callbacks)
@@ -108,11 +111,12 @@ void mouseMoved() {
   if (collided) {
     //println("YES
     //text("YES :)", 20, 380);
-    pc_health -= 1;
-    text(pc_health, 20, 380);
+    health -= 1;
+    text(health, 20, 380);
   } else {
     //println("NO");
-    text("HAS PERDIDO :(", 20, 380);
+    //text("HAS PERDIDO :(", 20, 380);
+    text(health, 20, 380);
   }
 
   // Red for the PC
