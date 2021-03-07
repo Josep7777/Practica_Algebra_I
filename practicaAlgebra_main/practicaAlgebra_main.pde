@@ -14,11 +14,13 @@ int amount_objects, escape;
 // Radius
 int circles_radius;
 int N;
+//Health of the player
 int health;
+//Player lifes
 int lifes = 3;
 //NPC Speed
 float npc_speed = random(1.5, 6);
-
+//CountDown function
 Timer countDownTimer;
 int timeLeft; 
 
