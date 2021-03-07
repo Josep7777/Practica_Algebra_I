@@ -1,11 +1,10 @@
-// A little collision detector
-// for circles
-// NPC's or objects will be GREEN
-// and static
-// PC will be red and moves with mouse
-//import java.util.Scanner;
-// Variables
-// Object's positions
+//Algebra Game
+//Integrants:
+//Josep Romera
+//Pablo Perpiñan
+
+String gameState;
+
 int[] objects_x_coord;
 int[] objects_y_coord;
 int[] objects_x_coord2;
@@ -15,25 +14,30 @@ int amount_objects, escape;
 // Radius
 int circles_radius;
 int N;
-int health = 500;
+int health;
+int lifes = 3;
 //NPC Speed
-float npc_speed = random(1.5,6);
+float npc_speed = random(1.5, 6);
 
-// Functions
-// Initialize
+Timer countDownTimer;
+int timeLeft; 
+
+
 void setup() {
-  // Our window
-  size(400, 400);
-  // No contours for our circles
-  noStroke();
-  // Arrays
-  amount_objects = 10;
-  escape = 10;
+  size(800, 600);
+  gameState = "START";
+  amount_objects = 7;
+  
+  health = 500;
+  countDownTimer = new Timer(1000);
+  timeLeft = 50;
+
+  escape = 3;
   // Objects in screen
   objects_x_coord2 = new int[amount_objects];
   objects_y_coord2= new int[amount_objects];
-  
-   objects_x_coord = new int[escape];
+
+  objects_x_coord = new int[escape];
   objects_y_coord = new int[escape];
   // Locate the objects (x,y)
   // Random!!!
@@ -49,9 +53,32 @@ void setup() {
   circles_radius = 8;
 }
 
-// Infinite loop
 void draw() {
-  // Background color
+  clearBackground(); 
+  if (gameState == "START") {
+    startGame();
+  } else if (gameState == "PLAY") {
+    playGame();
+  } else if (gameState == "WIN") {
+    winGame();
+  } else if (gameState == "LOSE") {
+    loseGame();
+  }
+}
+
+void startGame() {
+  background(0);
+  textAlign(CENTER);
+  textSize(18);
+  fill(255, 255, 255);
+  text("Click Anywhere to Start Game", width/2, height/2);
+  if (mousePressed == true) {
+    gameState = "PLAY";
+    countDownTimer.start();
+  }
+}
+
+void playGame() {
   background(0);
   // Object's color is green
   fill(0, 255, 0);
@@ -60,7 +87,7 @@ void draw() {
     ellipse(objects_x_coord[counter], 
       objects_y_coord[counter], 
       circles_radius, circles_radius);
-     // 1- Evaluate a vector
+    // 1- Evaluate a vector
     float vectorX, vectorY;
     vectorX=mouseX-objects_x_coord[counter];
     vectorY=mouseY-objects_y_coord[counter];
@@ -69,21 +96,19 @@ void draw() {
     vectorX/=magnitude;
     vectorY/=magnitude;
     // 3- Scale the vector
-    
+
     vectorX*=npc_speed;
     vectorY*=npc_speed;
     // 4- Move the enemy
     objects_x_coord[counter]-=vectorX;
     objects_y_coord[counter]-=vectorY;
   }
-      
-      noStroke();
-      rect(20, 380, map(health, 0, 500, 0, 500), 19 );
+
   for (int counter2=0; counter2<amount_objects; counter2++) {
     ellipse(objects_x_coord2[counter2], 
       objects_y_coord2[counter2], 
       circles_radius, circles_radius);
-     // 1- Evaluate a vector
+    // 1- Evaluate a vector
     float vectorX, vectorY;
     vectorX=mouseX-objects_x_coord2[counter2];
     vectorY=mouseY-objects_y_coord2[counter2];
@@ -92,15 +117,102 @@ void draw() {
     vectorX/=magnitude;
     vectorY/=magnitude;
     // 3- Scale the vector
-    
+
     vectorX*=npc_speed;
     vectorY*=npc_speed;
     // 4- Move the enemy
-   objects_x_coord2[counter2]+=vectorX;
-   objects_y_coord2[counter2]+=vectorY;
-  
+    objects_x_coord2[counter2]+=vectorX;
+    objects_y_coord2[counter2]+=vectorY;
   }
+  //Countdown
+  if(countDownTimer.complete() == true){
+   if (timeLeft > 1 ) {
+      timeLeft--;
+      countDownTimer.start();
+   } else {
+      gameState = "LOSE"; 
+   }
+  }
+  //Show countdown
+  String s ="Time Left: " + timeLeft;
+  textAlign(LEFT);
+  textSize(12);
+  text(s, 20, 100);
   
+  //Show health bar
+  fill(255, 0, 0);
+  rect(55, 560, map(health, 0, 500, 0, 700), 19 );
+  if(health <= 0){
+    gameState = "LOSE";
+  }
+
+
+}
+
+void winGame() {
+  fill(0);
+  text("HAS GANADO!", width/2, height/2);
+  if (mousePressed == true) {
+    gameState = "START";
+  }
+}
+
+void loseGame() {
+  background(0);
+  fill(255,255,255);
+  textSize(18);
+  text("YOU LOSE :( ", width/2, height/2);
+  
+  
+  //Try again button
+  fill(255,255,255);
+  rect(width/2-50, height/2+80, 100,60);
+  fill(255,255,255);
+  textSize(36);
+  fill(0,255,0);
+  text("Try Again", width/2, height/2+122); 
+  float leftEdge = width/2-50;
+  float rightEdge = width/2+50;
+  float topEdge = height/2+80;
+  float bottomEdge = height/2 + 140;
+  
+  if (mousePressed == true && 
+      mouseX > leftEdge && 
+      mouseX < rightEdge && 
+      mouseY > topEdge && 
+      mouseY < bottomEdge
+      ) {
+        
+    gameState = "START";
+    resetGame();
+  }
+}
+
+void resetGame() {
+  health = 500;
+  timeLeft = 50;
+  objects_x_coord2 = new int[amount_objects];
+  objects_y_coord2= new int[amount_objects];
+
+  objects_x_coord = new int[escape];
+  objects_y_coord = new int[escape];
+  // Locate the objects (x,y)
+  // Random!!!
+  for (int counter=0; counter<amount_objects; counter++) {
+    objects_x_coord2[counter] = (int)random(width-1);
+    objects_y_coord2[counter] = (int)random(height-1);
+  }
+  for (int counter=0; counter<escape; counter++) {
+    objects_x_coord[counter] = (int)random(width-1);
+    objects_y_coord[counter] = (int)random(height-1);
+  }
+  // Radius for the circles is
+  circles_radius = 8;
+}
+
+void clearBackground() {
+  fill(255);
+  rect(0, 0, width, height);
 }
 
 // Events (callbacks)
@@ -149,9 +261,8 @@ void mouseMoved() {
   } else {
     //println("NO");
     //text("HAS PERDIDO :(", 20, 380);
-    text(health, 20, 380);
+    text(health, 20, 550);
   }
-
   // Red for the PC
   fill(255, 0, 0);
   ellipse(mouseX, mouseY, 
