@@ -17,7 +17,7 @@ int N;
 //Health of the player
 int health;
 //Player lifes
-int lifes = 3;
+int lifes;
 //NPC Speed
 float npc_speed = random(1.5, 6);
 //CountDown function
@@ -29,7 +29,7 @@ void setup() {
   size(800, 600);
   gameState = "START";
   amount_objects = 7;
-  
+  lifes = 3;
   health = 500;
   countDownTimer = new Timer(1000);
   timeLeft = 50;
@@ -132,21 +132,33 @@ void playGame() {
       timeLeft--;
       countDownTimer.start();
    } else {
-      gameState = "LOSE"; 
+      lifes--;
    }
   }
-  //Show countdown
-  String s ="Time Left: " + timeLeft;
+  
+  //Show Lifes and countdown 
+  String showLifes ="Lives Left: " + lifes;
+  String showCountdown ="Time Left: " + timeLeft;
   textAlign(LEFT);
-  textSize(12);
-  text(s, 20, 100);
+  textSize(20);
+  text(showLifes, 20, 50);
+  text(showCountdown, 20, 70);
+  
+ 
+  
   
   //Show health bar
   fill(255, 0, 0);
   rect(55, 560, map(health, 0, 500, 0, 700), 19 );
   if(health <= 0){
+    lifes--;
+    health = 500;
+    timeLeft = 50;
+  } else if(lifes == 0){
     gameState = "LOSE";
   }
+
+  
 
 
 }
@@ -192,6 +204,7 @@ void loseGame() {
 
 void resetGame() {
   health = 500;
+  lifes = 3;
   timeLeft = 50;
   objects_x_coord2 = new int[amount_objects];
   objects_y_coord2= new int[amount_objects];
@@ -263,7 +276,6 @@ void mouseMoved() {
   } else {
     //println("NO");
     //text("HAS PERDIDO :(", 20, 380);
-    text(health, 20, 550);
   }
   // Red for the PC
   fill(255, 0, 0);
