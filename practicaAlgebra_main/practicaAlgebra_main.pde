@@ -9,9 +9,10 @@ int[] objects_x_coord;
 int[] objects_y_coord;
 int[] objects_x_coord2;
 int[] objects_y_coord2;
-
+int[] objects_x_coord3;
+int[] objects_y_coord3;
 // How many objects?
-int amount_objects, escape;
+int amount_objects, escape, random;
 // Radius
 int circles_radius;
 int N;
@@ -21,6 +22,7 @@ int health;
 int lifes;
 //NPC Speed
 float npc_speed = random(1.5, 6);
+float randomvalue = random(1.5, 6);
 //CountDown function
 Timer countDownTimer;
 int timeLeft; 
@@ -42,7 +44,6 @@ void setup() {
   // Objects in screen
   objects_x_coord2 = new int[amount_objects];
   objects_y_coord2= new int[amount_objects];
-
   objects_x_coord = new int[escape];
   objects_y_coord = new int[escape];
   // Locate the objects (x,y)
@@ -152,6 +153,29 @@ void playGame() {
     // 4- Move the enemy
     objects_x_coord2[counter2]+=vectorX;
     objects_y_coord2[counter2]+=vectorY;
+  }
+  
+  for (int counter3=0; counter3<random; counter3++) {
+    ellipse(objects_x_coord3[counter3], 
+      objects_y_coord3[counter3], 
+      circles_radius, circles_radius);
+    // 1- Evaluate a vector
+    float vectorX, vectorY;
+    vectorX=mouseX-objects_x_coord3[counter3];
+    vectorY=mouseY-objects_y_coord3[counter3];
+    // 2- Normalize the vector
+    float magnitude = sqrt(vectorX*vectorX + vectorY*vectorY);
+    vectorX/=magnitude;
+    vectorY/=magnitude;
+    // 3- Scale the vector
+
+    vectorX*=npc_speed;
+    vectorY*=npc_speed;
+    // 4- Move the enemy
+    objects_x_coord3[counter3]+=vectorX;
+    objects_y_coord3[counter3]+=vectorY;
+    //objects_x_coord3[counter3]+=vectorX *randomvalue;
+    //objects_y_coord3[counter3]+=vectorY *randomvalue;
   }
 
   float[] distance_between_centers;
@@ -274,14 +298,19 @@ void loseGame() {
 void resetGame() {
   amount_objects = enemies / 3;
     escape = enemies / 3;
+    random = enemies / 3;
   health = 500;
   lifes = 3;
+  random = 5;
   timeLeft = initial_time;
   objects_x_coord2 = new int[amount_objects];
   objects_y_coord2= new int[amount_objects];
 
   objects_x_coord = new int[escape];
   objects_y_coord = new int[escape];
+  
+   objects_x_coord3 = new int[random];
+   objects_y_coord3 = new int[random];
   // Locate the objects (x,y)
   // Random!!!
   for (int counter=0; counter<amount_objects; counter++) {
@@ -291,6 +320,10 @@ void resetGame() {
   for (int counter=0; counter<escape; counter++) {
     objects_x_coord[counter] = (int)random(width-1);
     objects_y_coord[counter] = (int)random(height-1);
+  }
+  for (int counter=0; counter<random; counter++) {
+    objects_x_coord3[counter] = (int)random(width-1);
+    objects_y_coord3[counter] = (int)random(height-1);
   }
   // Radius for the circles is
   circles_radius = 8;
