@@ -11,6 +11,9 @@ int[] objects_x_coord2;
 int[] objects_y_coord2;
 int[] objects_x_coord3;
 int[] objects_y_coord3;
+int[] rec_objects_x_coord;
+int[] rec_objects_y_coord;
+int rectangles_width, rectangles_height;
 // How many objects?
 int amount_objects, escape, random;
 // Radius
@@ -31,6 +34,7 @@ float positionPlayer_X;
 float positionPlayer_Y;
 
 int enemies;
+int amount_rectangles;
 
 void setup() {
   size(800, 600);
@@ -40,7 +44,7 @@ void setup() {
   countDownTimer = new Timer(1000);
   timeLeft = initial_time;
 
-/*
+
   // Objects in screen
   objects_x_coord2 = new int[amount_objects];
   objects_y_coord2= new int[amount_objects];
@@ -58,7 +62,6 @@ void setup() {
   }
   // Radius for the circles is
   circles_radius = 8;
-  */
 }
 
 void draw() {
@@ -67,6 +70,8 @@ void draw() {
     startGame();
   } else if (gameState == "PLAY") {
     playGame();
+  } else if (gameState == "BOSS") {
+    bossGame();
   } else if (gameState == "WIN") {
     winGame();
   } else if (gameState == "LOSE") {
@@ -79,38 +84,46 @@ void startGame() {
   textAlign(CENTER);
   textSize(18);
   fill(255, 255, 255);
-    if (keyPressed) {
-  if( key >= '0' && key <= '9' && enemies <99){
-    
-    //enemies*=10;
-    //enemies+=key-48;
-    enemies=key-48;
-  }
-  if( key == BACKSPACE || key == DELETE ){
-    enemies/=10;
-  }
-  if( key == ENTER && enemies > 0){
-    // Use value.
-    resetGame();
-    gameState = "PLAY";
-  }
-  if( key == ENTER && enemies == 0){
-    text("You need to select at least one enemy!!!", width/2, height/2+60);
-  }
+  if (keyPressed) {
+    if ( key >= '0' && key <= '9' && enemies <99) {
+
+      //enemies*=10;
+      //enemies+=key-48;
+      enemies=key-48;
+    }
+    if ( key == BACKSPACE || key == DELETE ) {
+      enemies/=10;
+    }
+    if ( key == ENTER && enemies > 0) {
+      // Use value.
+      resetGame();
+      gameState = "PLAY";
+    }
+    if ( key == ENTER && enemies == 0) {
+      text("You need to select at least one enemy!!!", width/2, height/2+60);
+    }
   }
   text(enemies, width/2, height/2);
   text("Select the amount of enemies and press ENTER", width/2, height/2-60);
   /*
   if (mousePressed == true) {
-    gameState = "PLAY";
-    countDownTimer.start();
-  }
-  */
+   gameState = "PLAY";
+   countDownTimer.start();
+   }
+   */
 }
 
 void playGame() {
-  background(0);
+  background(107, 11, 219);
   // Object's color is green
+  //PORTALS
+  fill(221, 229, 14);
+  ellipse(400, 100, 100, 30);
+  fill(75, 136, 255);
+  ellipse(30, 300, 30, 100);
+  ellipse(400, 570, 100, 30);
+  ellipse(770, 300, 30, 100);
+
   fill(0, 255, 0);
   // We loop through the objects
   for (int counter=0; counter<escape; counter++) {
@@ -154,7 +167,7 @@ void playGame() {
     objects_x_coord2[counter2]+=vectorX;
     objects_y_coord2[counter2]+=vectorY;
   }
-  
+
   for (int counter3=0; counter3<random; counter3++) {
     ellipse(objects_x_coord3[counter3], 
       objects_y_coord3[counter3], 
@@ -181,7 +194,7 @@ void playGame() {
   float[] distance_between_centers;
   float magnitude_of_vector;
   distance_between_centers =
-  new float[2];  // For X and Y coords.
+    new float[2];  // For X and Y coords.
   boolean collided = false;
 
   // Collision detection code
@@ -219,7 +232,7 @@ void playGame() {
     health -= 3;
     //IMPORTANTE, AQUI SE RESETEAN LOS ENEMIGOS QUE TE GOLPEAN
   } 
-  
+
   //Countdown
   if (countDownTimer.complete() == true) {
     if (timeLeft > 1 ) {
@@ -232,16 +245,25 @@ void playGame() {
   }
 
   //Show Lifes and countdown 
-  String showLifes ="Lives Left: " + lifes;
-  String showCountdown ="Time Left: " + timeLeft;
+  String showLifes ="Lives Left:   " + lifes;
+  String showCountdown ="Time Left:   " + timeLeft;
+  String showPuntuation ="Puntuation: 0";
+
+
+
+  fill(0);
+  //fill(201,191,191);
+  rect(0, 0, 800, 75 );
+  //Show health bar
+  fill(201, 191, 191);
+  rect(200, 35, 535, 19 );
   textAlign(LEFT);
   textSize(20);
-  text(showLifes, 20, 50);
-  text(showCountdown, 20, 70);
-
-  //Show health bar
+  text(showLifes, 20, 25);
+  text(showCountdown, 20, 45);
+  text(showPuntuation, 20, 65);
   fill(255, 0, 0);
-  rect(55, 560, map(health, 0, 500, 0, 700), 19 );
+  rect(200, 35, map(health, 0, 500, 0, 535), 19 );
   if (health <= 0) {
     lifes--;
     health = 500;
@@ -249,11 +271,21 @@ void playGame() {
   } else if (lifes == 0) {
     gameState = "LOSE";
   }
-  
-    // Red for the PC
+
+  // Red for the PC
   fill(255, 0, 0);
   ellipse(positionPlayer_X, positionPlayer_Y, 
     circles_radius, circles_radius);
+
+  fill(200, 64, 255);
+
+  // We loop through all the rectangles
+  for (int counter=0; counter<amount_rectangles; counter++) {
+    rect((float)rec_objects_x_coord[counter], 
+      (float)rec_objects_y_coord[counter], 
+      (float)rectangles_width, 
+      (float)rectangles_height);
+  }
 }
 
 void winGame() {
@@ -295,22 +327,39 @@ void loseGame() {
   }
 }
 
+void bossGame() {
+}
+
 void resetGame() {
   amount_objects = enemies / 3;
-    escape = enemies / 3;
-    random = enemies / 3;
+  escape = enemies / 3;
+  random = enemies / 3;
   health = 500;
   lifes = 3;
   random = 5;
   timeLeft = initial_time;
+
+  amount_rectangles = 8;
+
+  rec_objects_x_coord = new int[amount_rectangles];
+  rec_objects_y_coord = new int[amount_rectangles];
+  // Locate the rectangles, randomly
+  for (int counter=0; counter<amount_rectangles; counter++) {
+    rec_objects_x_coord[counter] = (int)random(width - 5);
+    rec_objects_y_coord[counter] = (int)random(80, height -8);
+  }
+  // Set the sizes for the rectangles
+  rectangles_width = 30;
+  rectangles_height = 15;
+
   objects_x_coord2 = new int[amount_objects];
   objects_y_coord2= new int[amount_objects];
 
   objects_x_coord = new int[escape];
   objects_y_coord = new int[escape];
-  
-   objects_x_coord3 = new int[random];
-   objects_y_coord3 = new int[random];
+
+  objects_x_coord3 = new int[random];
+  objects_y_coord3 = new int[random];
   // Locate the objects (x,y)
   // Random!!!
   for (int counter=0; counter<amount_objects; counter++) {
@@ -339,19 +388,73 @@ void clearBackground() {
 void mouseMoved() {
   positionPlayer_X = mouseX;
   positionPlayer_Y = mouseY;
+
+  boolean collided = true;
+  // Collision detector for AABB's
+  // 1- Find the coords for the two rectangles
+  // 2- Comparison of the limits
+  // 3- Decide!
+  // We find xmin,xmax,ymin,ymax
+  // for the P.C.
+
+  // Xcenter - width/2
+  float xmin1= mouseX -
+    (rectangles_width/2.0);
+
+  // Xcenter + width/2
+  float xmax1=mouseX +
+    (rectangles_width/2.0);
+
+  // Ycenter + height/2
+  float ymin1=mouseY +
+    (rectangles_height/2.0);
+
+  // Ycenter - height/2
+  float ymax1=mouseY -
+    (rectangles_height/2.0);
+
+  // Let's follow the same
+  // sequence with the rest of the
+  // objects - rectangles
+  for (int counter=0; counter<amount_rectangles; counter++) {
+    // Evaluate the values for
+    // the NPC rectangle
+    float xmin2=rec_objects_x_coord[counter]
+      -(rectangles_width/2.0);
+    float xmax2=rec_objects_x_coord[counter]
+      +(rectangles_width/2.0);
+    // Watch out! processing and the
+    // Y axis!!! (reversed)
+    float ymin2=rec_objects_y_coord[counter]
+      +(rectangles_height/2.0);
+    float ymax2=rec_objects_y_coord[counter]
+      -(rectangles_height/2.0);
+    // Collision state
+    collided = true;
+    // There is no collision if...
+    if ((xmax1<xmin2)|| // 1 vs 2
+      (ymax1>ymin2)|| // 1 vs 2
+      (xmax2<xmin1)|| // 2 vs 1
+      (ymax2>ymin1)) // 2 vs 1
+      collided = false;
+    // Text in white
+    fill(255);
+    // Feedback to the user
+    if (collided) text("YES!!!", 20, 380);
+    //else text("NO :(", 20, 380);
+  }
 }
 
 void keyPressed() {
   if (key == CODED) {
     if (keyCode == UP) {
-       positionPlayer_Y = positionPlayer_Y - 10;
+      positionPlayer_Y = positionPlayer_Y - 10;
     } else if (keyCode == DOWN) {
       positionPlayer_Y = positionPlayer_Y +10;
-    } 
-    else if (keyCode == RIGHT) {
-       positionPlayer_X = positionPlayer_X + 10;
+    } else if (keyCode == RIGHT) {
+      positionPlayer_X = positionPlayer_X + 10;
     } else if (keyCode == LEFT) {
       positionPlayer_X = positionPlayer_X -10;
-    } 
+    }
   }
 }
