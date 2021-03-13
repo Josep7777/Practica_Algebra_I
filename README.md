@@ -1,2 +1,2 @@
-# Practica_Algebra_I
+# Práctica de Álgebra I
 ![alt text](https://nivel40.com/wp-content/uploads/2020/01/videogames_BLOG.jpg)
