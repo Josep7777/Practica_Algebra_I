@@ -497,14 +497,12 @@ void resetGame() {
   boss_portal = int(random(1, 4));
   
   //Test for not spawning in the same boss portal location
-  int pass_test = 0;
-  while(pass_test >= 1){
-  if (boss_portal == spawn_portal) {
-      spawn_portal = int(random(1, 4));
-    }else{
-     pass_test++; 
+  //int pass_test = 0;
+  
+  while(boss_portal == spawn_portal){
+    boss_portal = int(random(1, 4));
     }
-  }
+  
   
   //Set spawn portal locations
   if (spawn_portal == 1) {
