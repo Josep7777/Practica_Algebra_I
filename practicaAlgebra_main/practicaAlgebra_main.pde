@@ -11,13 +11,6 @@ int[] objects_x_coord2;
 int[] objects_y_coord2;
 int[] objects_x_coord3;
 int[] objects_y_coord3;
-int[] rec_objects_x_coord;
-int[] rec_objects_y_coord;
-int rectangles_width, rectangles_height;
-
-int[] cordenada_portal1x; 
-int[] cordenada_portal1y;
-
 // How many objects?
 int amount_objects, escape, random;
 // Radius
@@ -38,7 +31,6 @@ float positionPlayer_X;
 float positionPlayer_Y;
 
 int enemies;
-int amount_rectangles;
 
 void setup() {
   size(800, 600);
@@ -75,8 +67,6 @@ void draw() {
     startGame();
   } else if (gameState == "PLAY") {
     playGame();
-  } else if (gameState == "BOSS") {
-    bossGame();
   } else if (gameState == "WIN") {
     winGame();
   } else if (gameState == "LOSE") {
@@ -119,24 +109,7 @@ void startGame() {
 }
 
 void playGame() {
- // background(0);
-  background(107, 11, 219);
-  fill(221, 229, 14);
-  ellipse(400, 100, 100, 30);
-  fill(75, 136, 255);
-  ellipse(30, 300, 30, 100);
-  ellipse(400, 570, 100, 30);
-  ellipse(770, 300, 30, 100);
-  
-  
-  
-  float elip1x, elip1y;
-  elip1x =positionPlayer_X-400;
-  elip1y =positionPlayer_Y-100;
-  
-  float elip1 = sqrt(elip1x*elip1x + elip1y*elip1y);
-  elip1x/=elip1;
-  elip1y/=elip1;
+  background(0);
   // Object's color is green
   fill(0, 255, 0);
   // We loop through the objects
@@ -146,7 +119,7 @@ void playGame() {
       circles_radius, circles_radius);
     // 1- Evaluate a vector
     float vectorX, vectorY;
-    vectorX= positionPlayer_X-objects_x_coord[counter];
+    vectorX=positionPlayer_X-objects_x_coord[counter];
     vectorY=positionPlayer_Y-objects_y_coord[counter];
     // 2- Normalize the vector
     float magnitude = sqrt(vectorX*vectorX + vectorY*vectorY);
@@ -159,8 +132,6 @@ void playGame() {
     // 4- Move the enemy
     objects_x_coord[counter]-=vectorX;
     objects_y_coord[counter]-=vectorY;
-    
-    
   }
 
   for (int counter2=0; counter2<amount_objects; counter2++) {
@@ -208,29 +179,11 @@ void playGame() {
   }
 
   float[] distance_between_centers;
-  float[]  distanciaelip1;
-  float[]  distanciaelip2;
-  float[]  distanciaelip3;
-  float[]  distanciaelip4;
-      
   float magnitude_of_vector;
-  float magnitude;
-  float magnitude2;
-  float magnitude3;
-  float magnitude4;
   distance_between_centers =
   new float[2];  // For X and Y coords.
- 
-   distanciaelip1 = new float[2];
-   distanciaelip2 = new float[2];
-   distanciaelip3 = new float[2];
-   distanciaelip4 = new float[2];
-  
   boolean collided = false;
-  boolean colision1 = false;
-  boolean colision2 = false;
-  boolean colision3 = false;
-  boolean colision4 = false;
+
   // Collision detection code
   // 1- Find the vector
   // 2- Find the magnitude
@@ -239,106 +192,6 @@ void playGame() {
   // 5- Decide!
   // You should follow this sequence
   // for all the objects
-   float Elip1x = 400;
-   float Elip1y = 100;
-   
-   float Elip2x = 30;
-   float Elip2y = 300;
-   
-   float Elip3x = 400;
-   float Elip3y = 570;
-   
-   float Elip4x = 770;
-   float Elip4y = 300;
-   
-  distanciaelip1[0]=
-      positionPlayer_X - Elip1x;
-    distanciaelip1[1]=
-      positionPlayer_Y - Elip1y;
-  distanciaelip2[0]=
-      positionPlayer_X - Elip2x;
-    distanciaelip2[1]=
-      positionPlayer_Y - Elip2y;
-  distanciaelip3[0]=
-      positionPlayer_X - Elip3x;
-    distanciaelip3[1]=
-      positionPlayer_Y - Elip3y;   
-  distanciaelip4[0]=
-      positionPlayer_X - Elip4x;
-    distanciaelip4[1]=
-      positionPlayer_Y - Elip4y;   
-     
-    magnitude = sqrt(
-    distanciaelip1[0]*
-    distanciaelip1[0] +
-    distanciaelip1[1]*
-    distanciaelip1[1]);
-    magnitude2 = sqrt(
-    distanciaelip2[0]*
-    distanciaelip2[0] +
-    distanciaelip2[1]*
-    distanciaelip2[1]);
-    magnitude3 = sqrt(
-    distanciaelip3[0]*
-    distanciaelip3[0] +
-    distanciaelip3[1]*
-    distanciaelip3[1]);
-    magnitude4 = sqrt(
-    distanciaelip4[0]*
-    distanciaelip4[0] +
-    distanciaelip4[1]*
-    distanciaelip4[1]);
-  
-  if(magnitude<
-  circles_radius+circles_radius) {
-    colision1 = true;
-  }
- else{
-   colision1 = false;
- }
-  
-  if (colision1){
-    text("portal1", 20, 380);
-  }
-  
-  
- if(magnitude2<
-  circles_radius+circles_radius) {
-    colision2 = true;
-  }
- else{
-   colision2 = false;
- }
-  
-  if (colision2){
-    text("portal2", 20, 380);
-  } 
-  
- if(magnitude3<
-   circles_radius+circles_radius) {
-    colision3 = true;
-  }
- else{
-   colision3= false;
- }
-  
-  if (colision3){
-    text("portal3", 20, 380);
-  }
-  
- if(magnitude4<
-   circles_radius+circles_radius) {
-    colision4 = true;
-  }
- else{
-   colision4= false;
- }
-  
-  if (colision4){
-    text("portal4", 20, 380);
-  }  
-   
-  
   for (int counter=0; counter<amount_objects; counter++) {
     // Vector Coords.
     distance_between_centers[0]=
@@ -381,21 +234,14 @@ void playGame() {
   //Show Lifes and countdown 
   String showLifes ="Lives Left: " + lifes;
   String showCountdown ="Time Left: " + timeLeft;
-  String showPuntuation ="Puntuation: 0";
-
-  fill(0);
-  //fill(201,191,191);
-  rect(0, 0, 800, 75 );
-  //Show health bar
-  fill(201, 191, 191);
-  rect(200, 35, 535, 19 );
   textAlign(LEFT);
   textSize(20);
-  text(showLifes, 20, 25);
-  text(showCountdown, 20, 45);
-  text(showPuntuation, 20, 65);
+  text(showLifes, 20, 50);
+  text(showCountdown, 20, 70);
+
+  //Show health bar
   fill(255, 0, 0);
-  rect(200, 35, map(health, 0, 500, 0, 535), 19 );
+  rect(55, 560, map(health, 0, 500, 0, 700), 19 );
   if (health <= 0) {
     lifes--;
     health = 500;
@@ -403,22 +249,11 @@ void playGame() {
   } else if (lifes == 0) {
     gameState = "LOSE";
   }
-
- 
+  
     // Red for the PC
   fill(255, 0, 0);
   ellipse(positionPlayer_X, positionPlayer_Y, 
     circles_radius, circles_radius);
-    
-      fill(200, 64, 255);
-
-  // We loop through all the rectangles
-  for (int counter=0; counter<amount_rectangles; counter++) {
-    rect((float)rec_objects_x_coord[counter], 
-      (float)rec_objects_y_coord[counter], 
-      (float)rectangles_width, 
-      (float)rectangles_height);
-  }
 }
 
 void winGame() {
@@ -459,29 +294,15 @@ void loseGame() {
     resetGame();
   }
 }
-void bossGame() {
-}
+
 void resetGame() {
   amount_objects = enemies / 3;
     escape = enemies / 3;
     random = enemies / 3;
   health = 500;
   lifes = 3;
-  //random = 5;
+  random = 5;
   timeLeft = initial_time;
-  
-    amount_rectangles = 8;
-      rec_objects_x_coord = new int[amount_rectangles];
-  rec_objects_y_coord = new int[amount_rectangles];
-  // Locate the rectangles, randomly
-  for (int counter=0; counter<amount_rectangles; counter++) {
-    rec_objects_x_coord[counter] = (int)random(width - 5);
-    rec_objects_y_coord[counter] = (int)random(80, height -8);
-  }
-  // Set the sizes for the rectangles
-  rectangles_width = 30;
-  rectangles_height = 15;
-    
   objects_x_coord2 = new int[amount_objects];
   objects_y_coord2= new int[amount_objects];
 
